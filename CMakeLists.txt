@@ -9,3 +9,9 @@ cmake_minimum_required(VERSION 3.27)
 project(StructsPp_Project)
 
 set(CMAKE_CXX_STANDARD 20)
+add_executable(StructsPp
+        include/string.h
+        include/list.h
+        src/string.cpp
+
+)
