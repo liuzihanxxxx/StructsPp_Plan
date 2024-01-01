@@ -11,7 +11,10 @@ project(StructsPp_Project)
 set(CMAKE_CXX_STANDARD 20)
 add_executable(StructsPp
         include/string.h
+        include/file.h
         include/list.h
-        src/string.cpp
-
+        test/test.cpp
+        include/concept.h
+        include/concept.h
+        "include/allheader(msvc).h"
 )

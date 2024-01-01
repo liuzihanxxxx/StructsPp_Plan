@@ -1,17 +1,17 @@
 #ifndef STRUCTSPP_PROJECT_STRING_H
 #define STRUCTSPP_PROJECT_STRING_H
-#include <yvals_core.h>
 #include <cstring>
 #include <string>
 #include <iostream>
 #include <vector>
+#include "file.h"
 
 namespace utils{
     class string{
-    private:
+    protected:
         size_t _long = 10;
         char *s=new char[_long];
-        size_t length=0;
+        size_t _length=0;
         void flash_size(size_t newsize){
             char *c = s;
             delete []s;
@@ -23,9 +23,22 @@ namespace utils{
         void flash(size_t newsize, const char* newstr){
             flash_size(strlen(newstr)+1);
             strcpy(s, newstr);
-            this->length = strlen(newstr);
+            this->_length = strlen(newstr);
         }
+        friend class file;
     public:
+        const char* begin() const {
+            return s;
+        }
+        const char* end() const {
+            return s + _length;
+        }
+        char* begin() {
+            return s;
+        }
+        char* end() {
+            return s + _length;
+        }
         size_t strlen(){
             size_t i=0;
             while(s[i]!='\0')i++;
@@ -36,7 +49,7 @@ namespace utils{
             while (c[i]!='\0')i++;
             return i;
         }
-        string():length(0){}
+        string():_length(0){}
         string(const char* c){
             flash(string::strlen(c)+1, c);
         }
@@ -55,23 +68,42 @@ namespace utils{
         void strcpyto(string t){
             t.flash(this->_long, this->s);
         }
-        void strcpyto(char* t){
+        void strcpyto(char* &t){
             t = this->s;
+        }
+        void strcpyto(std::string& t){
+            t = s;
         }
         void strcpyin(string f){
             this->flash(f._long, f.s);
-            this->length = f.length;
+            this->_length = f._length;
+        }
+        template <size_t size>
+        void strcpyin(char (*f)[size]){
+            this->flash(size, f);
+            this->_length = size;
+        }
+        void strcpyin(std::string f){
+            this->flash(f.size(), f.c_str());
+            this->_length = f.length();
+        }
+        //todo make two functions can Accepts two arbitrary one-dimensional character arrays ，name strcpyin and strcpyout.
+        char* c_str(){
+            return s;
         }
         bool empty(){
-            if (length == 0) return true;
+            if (_length == 0) return true;
             return false;
         }
         void clear(){
             s = NULL;
-            this->length = 0;
+            this->_length = 0;
         }
         char* data(){
             return s;
+        }
+        void push_back(char c){
+            this->flash(this->_long+1, this->s+c);
         }
         bool substr(string sub){
             return strstr(this->s, sub.s);
@@ -92,7 +124,10 @@ namespace utils{
             return strcmp(str.s, this->s);
         }
         size_t size(){
-            return length;
+            return _length;
+        }
+        size_t length() {
+            return this->size();
         }
         ~string(){
             delete[] s;
@@ -118,10 +153,16 @@ namespace utils{
         operator unsigned long long (){
             return std::stoull(s);
         }
+        operator char*(){
+            return this->c_str();
+        }
+        operator std::string(){
+            return std::string(s);
+        }
         string operator+(string l){
             string ret;
             ret._long = this->_long + l._long;
-            ret.length = this->length + l.length;
+            ret._length = this->_length + l._length;
             ret.s = new char[ret._long];
             strcpy(ret.s, strcat(this->s, l.s));
         }
@@ -137,7 +178,7 @@ namespace utils{
             temp.push_back('\0');
             str.flash_size(temp.size());
             std::copy(temp.begin(), temp.end(), str.s);
-            str.length = temp.size() - 1;
+            str._length = temp.size() - 1;
             return in;
         }
     };

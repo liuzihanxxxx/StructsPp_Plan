@@ -1,0 +1,5 @@
+#ifndef STRUCTSPP_PROJECT_ALLHEADER_MSVC_H
+#define STRUCTSPP_PROJECT_ALLHEADER_MSVC_H
+#include <__msvc_all_public_headers.hpp>
+
+#endif //STRUCTSPP_PROJECT_ALLHEADER_MSVC_H
